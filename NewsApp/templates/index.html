@@ -1,0 +1,93 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{%static 'style/style.css'%}">
+        <title>News-App</title>
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <img src="{%static 'images/more.png'%}" alt="" class="left-icon">
+            <div class="header-text">Good News</div>
+            <img src="{%static 'images/search.png'%}" alt="" class="right-icon">
+        </div>
+
+        <div class="filter-navbar">
+            <ul>
+                <li class="active {% if selected_category is None %}active{% endif %}">
+                    <a href="{% url 'home' %}">All</a>
+                </li>
+                {% for category in categories %}
+                    {% if category.post_set.all %}
+                        <li class="{% if selected_category == category %}active{% endif %}">
+                            <a href="{% url 'home' %}?category={{ category.name }}">{{ category.name }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                <li><img src="{% static 'images/next.png' %}" alt="" class="arrow-icon"></li>
+            </ul>
+        </div>
+
+
+        <div class="article-container">
+        <div class="main-article">
+            <img class="article-image" src="{% static 'images/building-03.jpg' %}" alt="Head-Image">
+            <h4 class="article-title">
+                <img class="logo-icon" src="{% static 'images/logo.jpg' %}" alt="logo">
+                {% if post_with_highest_views %}
+                    {{ post_with_highest_views.posted_by }}
+                {% else %}
+                    No posts available
+                {% endif %}
+            </h4>
+            <div class="article-full-title">
+                {% if post_with_highest_views %}
+                    {{ post_with_highest_views.title|truncatewords:13 }}
+                {% else %}
+                    No content available
+                {% endif %}
+                <br>
+                <span class="article-info"><a href="{{post_with_highest_views.content}}" target="_blank" class="read-more">Read more</a></span>
+            </div>
+        </div>
+    </div>
+
+        <div class="more-articles-container">
+            {% for more_posts in more_posts %}
+                <div class="more-article">
+                    <img class="article-image" src="{% static 'images/building-01.jpg' %}" alt="">
+                    <h4 class="article-title">
+                        <img class="logo-icon" src="{% static 'images/logo.jpg' %}" alt="logo">
+                        {{ more_posts.posted_by }}
+                    </h4>
+                    <div class="article-full-title">{{ more_posts.title|truncatewords:7 }}
+                        <div><a href="{{more_posts.content}}" target="_blank" class="read-more">Read more</a></div></div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="pagination">
+            <span class="step-links">
+                {% if more_posts.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ more_posts.previous_page_number }}">previous</a>
+                {% endif %}
+        
+                <span class="current">
+                    Page {{ more_posts.number }} of {{ more_posts.paginator.num_pages }}.
+                </span>
+        
+                {% if more_posts.has_next %}
+                    <a href="?page={{ more_posts.next_page_number }}">next</a>
+                    <a href="?page={{ more_posts.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+          </div>
+    </div>
+
+    
+
+</body>
+</html>

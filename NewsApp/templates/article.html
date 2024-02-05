@@ -1,0 +1,123 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{%static 'style/style.css'%}">
+    <title>News-Article</title>
+</head>
+
+<body>
+
+    <style>
+        .article-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0px;
+            background-color: #fff;
+            color: #333333;
+            font-weight: 500;
+            font-size: 20px;
+        }
+
+
+        .article-header .left-icon,
+        .article-header .right-icon {
+            margin-right: 10px;
+            cursor: pointer;
+            color: #FF5152;
+            width: 16px;
+        }
+
+
+        .article-title {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            margin-left: 5px;
+        }
+
+        h3,
+        .read-more {
+            margin: 0;
+        }
+
+        button {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 14px;
+            color: grey;
+            background-color: white;
+            border: 1px solid grey;
+            margin-left: 50px;
+        }
+    </style>
+
+
+    <div class="app-container">
+        <div class="article-header">
+            <a href="{%url 'home'%}"><img src="{%static 'images/back.png'%}" alt="" class="left-icon"></a>
+            <div class="header-text">{{post.category}}</div>
+            <img src="{%static 'images/search.png'%}" alt="" class="right-icon">
+        </div>
+
+
+        <div class="article-container">
+            <div class="article-title">
+                <img class="logo-icon" src="{%static 'images/logo.jpg'%}" alt="logo">
+                <div class="content-wrapper">
+                    <h3>Dolor Design</h3>
+                    <span class="read-more">{{post.date_posted}}</span>
+                </div>
+
+                <button>Follow</button>
+            </div>
+
+            <div class="article-full-title">{{post.title}}</div>
+            <img class="article-image" src="{%static 'images/building-03.jpg'%}" alt="Head-Image">
+            <p class="article-info">
+                {{post.content}}
+            </p>
+
+        </div>
+        {% if user.is_authenticated%}
+        <div class="container">
+         <form method="post">
+            {%csrf_token%}
+            {{comment_form.as_p}}
+            <br/>
+            <button class="btn btn-info btn-sm">Post comment</button>
+        </form>
+        </div>
+
+        {%else%}
+        <div class="container">
+            Please <a href="{%url 'login' %}">login</a> to comment on this post
+        </div>
+        {%endif%}
+        <br/>
+        <hr/>
+        <h2>Comments</h2>
+        {%if not post.comments.all%}
+            No comment yet
+        {%else%}
+            {%for comment in post.comments.all%}
+                 <p>{{comment.comment}} by {{comment.name}}<br/></p>
+            {%endfor%}
+
+        {%endif%}
+    </div>
+
+</body>
+
+</html>
